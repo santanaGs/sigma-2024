@@ -1,23 +1,11 @@
 import styled from "styled-components";
 
 export const Background = styled.div`
-  background: rgb(11, 74, 80);
-  background: -moz-linear-gradient(
-    90deg,
-    rgba(11, 74, 80, 1) 0%,
-    rgba(68, 161, 160, 1) 0B4A50%
-  );
-  background: -webkit-linear-gradient(
-    90deg,
-    rgba(11, 74, 80, 1) 0%,
-    rgba(68, 161, 160, 1) 0B4A50%
-  );
   background: linear-gradient(
-    90deg,
-    rgba(11, 74, 80, 1) 0%,
-    rgba(68, 161, 160, 1) 0B4A50%
-  );
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#0b4a50",endColorstr="#44a1a0",GradientType=1);
+    to bottom right,
+    #0b4a50,
+    #44a1a0
+  ); /* Gradiente diagonal */
   width: 100%;
   height: 100vh;
   display: flex;
@@ -26,7 +14,7 @@ export const Background = styled.div`
 `;
 
 export const Content = styled.form`
-  width: 40rem;
+  width: 550px;
   height: auto;
   border-radius: 1.25rem;
   background-color: #ffffff;

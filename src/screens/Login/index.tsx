@@ -19,7 +19,7 @@ const Login: React.FC = () => {
 
     if (email === "sigma@uscsonline.com.br" && password === "123@sigma") {
       setError(false);
-      navigate("/home");
+      navigate("/dashboard");
     } else {
       setError(true);
     }
