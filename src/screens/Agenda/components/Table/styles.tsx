@@ -36,6 +36,7 @@ export const Tr = styled.tr`
   }
 
   height: 50px;
+  cursor: pointer;
 `;
 
 export const Td = styled.td`
