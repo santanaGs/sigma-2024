@@ -7,10 +7,11 @@ export const Background = styled.div`
     #44a1a0
   ); /* Gradiente diagonal */
   width: 100%;
-  height: 100vh;
+  height: auto;
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: 2rem;
 `;
 
 export const Content = styled.form`
@@ -63,10 +64,4 @@ export const ButtosContaner = styled.div`
   display: flex;
   align-items: center;
   gap: 1rem;
-`;
-
-export const Loading = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
 `;
