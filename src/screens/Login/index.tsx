@@ -35,12 +35,15 @@ const Login: React.FC = () => {
       })
       .then((res) => {
         console.log(res.data);
+        localStorage.setItem("name", res.data.user.name);
+
+        navigate("/agenda");
       })
       .catch((err) => {
         console.log(err);
+        setError(true);
       })
       .finally(() => {
-        navigate("/agenda");
         setLoading(false);
       });
   };
@@ -65,7 +68,7 @@ const Login: React.FC = () => {
             setPassword(e.target.value);
           }}
         />
-        {error && <p>Senha ou usuario incorreto</p>}
+        {error && <p style={{ color: "red" }}>Senha ou usuario incorreto</p>}
         {loading ? (
           <Loading>
             <ClipLoader color={"#0b4a50"} loading={true} size={50} />

@@ -22,16 +22,19 @@ export const Input = styled.input`
 
 export const User = styled.img`
   position: absolute;
-  top: 23%;
-  left: 2%;
+  top: 30%;
+  left: 4%;
+  width: 20px;
 `;
 export const Password = styled.img`
   position: absolute;
-  top: 25%;
-  left: 2%;
+  top: 30%;
+  left: 4%;
+  width: 20px;
 `;
 export const Eye = styled.img`
   position: absolute;
-  right: 3%;
-  top: 25%;
+  right: 5%;
+  top: 30%;
+  width: 30px;
 `;

@@ -13,17 +13,30 @@ import agenda from "@/assets/agenda.svg";
 import prontuario from "@/assets/prontuario.svg";
 import dash from "@/assets/dash.svg";
 import suporte from "@/assets/suporte.svg";
+import logout from "@/assets/log-out.svg";
+import { useEffect, useState } from "react";
 
 const NavBar: React.FC = () => {
   // Navigate
   const navigate = useNavigate();
+  const [name, setName] = useState<null | string>(null);
+
+  useEffect(() => {
+    const fetchNameMedico = async () => {
+      const fullName = await localStorage.getItem("name");
+      const firstName = fullName ? fullName.split(" ")[0] : "";
+      setName(firstName);
+    };
+
+    fetchNameMedico();
+  }, []);
 
   // Rendering
   return (
     <DivS>
       <MedicoDiv>
         <MedicoImagem src="https://imgur.com/51muZcN.png" alt="" />
-        <MedicoName>Drª Maicon</MedicoName>
+        <MedicoName>Drª {name}</MedicoName>
       </MedicoDiv>
       <Nav>
         <NavButton
@@ -57,6 +70,14 @@ const NavBar: React.FC = () => {
         >
           <img src={suporte} alt="" />
           <ButtonTitle>Suporte</ButtonTitle>
+        </NavButton>
+        <NavButton
+          onClick={() => {
+            navigate("/");
+          }}
+        >
+          <img style={{ width: 45 }} src={logout} alt="" />
+          <ButtonTitle>Sair</ButtonTitle>
         </NavButton>
       </Nav>
     </DivS>

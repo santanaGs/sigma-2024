@@ -12,18 +12,18 @@ const Register: React.FC = () => {
   // Navigation
   const navigate = useNavigate();
   // Variables
-  const [email, setEmail] = useState<string | null>();
-  const [password, setPassword] = useState<string | null>();
-  const [endereco, setEndereco] = useState<string | null>();
-  const [crm, setCrm] = useState<string | null>();
-  const [name, setName] = useState<string | null>();
+  const [email, setEmail] = useState<string | null>(null);
+  const [password, setPassword] = useState<string | null>(null);
+  const [endereco, setEndereco] = useState<string | null>(null);
+  const [crm, setCrm] = useState<string | null>(null);
+  const [name, setName] = useState<string | null>(null);
   const [error, setError] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
 
   // Function
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault(); // Evita o recarregamento da página
-    setLoading(true3);
+    e.preventDefault(); // Prevents the page from reloading
+    setLoading(true);
     axios
       .post("http://localhost:8080/cadastrar", {
         name: name,
@@ -34,14 +34,19 @@ const Register: React.FC = () => {
       })
       .then((res) => {
         console.log(res.data);
+        setLoading(false);
+        alert("Cadastro realizado com sucesso!");
+        navigate("/");
       })
       .catch((err) => {
-        console.log(err.resquest);
+        console.log(err.request);
+        setError(true);
       })
       .finally(() => {
         setLoading(false);
       });
   };
+
   return (
     <Background>
       <Content onSubmit={handleSubmit}>
@@ -83,13 +88,12 @@ const Register: React.FC = () => {
           }}
         />
 
-        {error && <p>Senha ou usuario incorreto</p>}
         {loading ? (
           <Loading>
-            <ClipLoader color={"#0b4a50"} loading={true} size={50} />
+            <ClipLoader color={"#0b4a50"} loading={true} size={30} />
           </Loading>
         ) : (
-          <Submit type="submit" value={`Acessar`} />
+          <Submit type="submit" value={`Registrar`} />
         )}
       </Content>
     </Background>

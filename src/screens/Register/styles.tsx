@@ -7,7 +7,7 @@ export const Background = styled.div`
     #44a1a0
   ); /* Gradiente diagonal */
   width: 100%;
-  height: auto;
+  height: 100ch;
   display: flex;
   align-items: center;
   justify-content: center;

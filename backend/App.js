@@ -84,6 +84,7 @@ app.post("/login", async (req, res) => {
     erro: false,
     mensagem: "Login realizado com sucesso!!",
     token,
+    user,
   });
 });
 
