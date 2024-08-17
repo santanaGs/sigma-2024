@@ -1,7 +1,8 @@
 const Sequelize = require("sequelize");
 const db = require("./db");
+const Specialty = require('./specialty'); // Ajuste o caminho conforme sua estrutura de arquivos
 
-const User = db.define("users", {
+const Doctor = db.define("doctors", {
   id: {
     type: Sequelize.INTEGER,
     autoIncrement: true,
@@ -15,6 +16,7 @@ const User = db.define("users", {
   email: {
     type: Sequelize.STRING,
     allowNull: false,
+    unique: true,
   },
   password: {
     type: Sequelize.STRING,
@@ -23,12 +25,27 @@ const User = db.define("users", {
   crm: {
     type: Sequelize.STRING,
     allowNull: false,
+    unique: true,
+  },
+  especialidade: {
+    type: Sequelize.INTEGER,
+    allowNull: false,
+    references: {
+      model: Specialty,
+      key: 'id',
+    },
+    onUpdate: 'CASCADE',
+    onDelete: 'SET NULL',
   },
   endereco: {
     type: Sequelize.STRING,
     allowNull: false,
   },
+}, {
+  timestamps: true,
 });
 
-//CRIAR A TABELA
-module.exports = User;
+// Define a associação
+Doctor.belongsTo(Specialty, { foreignKey: 'especialidade', as: 'specialty' });
+
+module.exports = Doctor;

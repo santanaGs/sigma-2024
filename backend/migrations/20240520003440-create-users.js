@@ -2,7 +2,7 @@
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable("users", {
+    await queryInterface.createTable("doctors", {
       id: {
         type: Sequelize.INTEGER,
         autoIncrement: true,
@@ -24,6 +24,11 @@ module.exports = {
       crm: {
         type: Sequelize.STRING,
         allowNull: false,
+        unique: true,
+      },
+      especialidade: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
       },
       endereco: {
         type: Sequelize.STRING,
@@ -41,6 +46,6 @@ module.exports = {
   },
 
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable("users");
+    await queryInterface.dropTable("doctors");
   },
 };

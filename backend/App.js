@@ -5,7 +5,8 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
 const { eAdmin } = require("./middlewares/auth");
-const User = require("./models/user");
+const Doctor = require("./models/user");
+const Specialty = require("./models/specialty");
 
 // USE LOCAL HOST
 const cors = require("cors");
@@ -14,14 +15,14 @@ app.use(express.json());
 app.use(cors());
 
 app.get("/", eAdmin, async (req, res) => {
-  await User.findAll({
+  await Doctor.findAll({
     attributes: ["id", "name", "crm"],
     order: [["id", "DESC"]],
   })
-    .then((users) => {
+    .then((doctors) => {
       return res.json({
         erro: false,
-        mensagem: users,
+        mensagem: doctors,
         id_usuario_logado: req.userId,
       });
     })
@@ -34,11 +35,12 @@ app.get("/", eAdmin, async (req, res) => {
 });
 // CADASTRO DE USUARIO
 app.post("/cadastrar", async (req, res) => {
+
   var dados = req.body;
   dados.password = await bcrypt.hash(dados.password, 8);
 
   try {
-    await User.create(dados);
+    await Doctor.create(dados);
     return res.json({
       erro: false,
       mensagem: "Usuário cadastrado com sucesso!!",
@@ -46,26 +48,26 @@ app.post("/cadastrar", async (req, res) => {
   } catch (error) {
     return res.status(400).json({
       erro: true,
-      mensagem: "Error ao cadastrar o usuário!!",
+      mensagem: "Error ao cadastrar o usuário!!" + error,
     });
   }
 });
 // LOGIN DE USUARIO
 app.post("/login", async (req, res) => {
-  const user = await User.findOne({
+  const doctor = await Doctor.findOne({
     attributes: ["id", "name", "email", "password", "crm", "endereco"],
     where: {
       email: req.body.email,
     },
   });
-  if (user === null) {
+  if (doctor === null) {
     return res.status(400).json({
       erro: true,
       mensagem: "Error: Usuário ou senha Incorreta!",
     });
   }
 
-  if (!(await bcrypt.compare(req.body.password, user.password))) {
+  if (!(await bcrypt.compare(req.body.password, doctor.password))) {
     return res.status(400).json({
       erro: true,
       mensagem: "Error: Usuário ou senha Incorreta!",
@@ -73,7 +75,7 @@ app.post("/login", async (req, res) => {
   }
 
   var token = jwt.sign(
-    { id: user.id },
+    { id: doctor.id },
     "4F8U4O6JH18O74DG3A1FH8J7DV21MN1D4FD69Y97QW1ASD4F6GJ8HU9",
     {
       expiresIn: "7d",
@@ -88,6 +90,41 @@ app.post("/login", async (req, res) => {
   });
 });
 
+// GET ALL DOCTORS
+app.get("/medicos", async (req, res) => {
+  try {
+    const doctors = await Doctor.findAll({
+      order: [["id", "DESC"]],
+      include: [
+        {
+          model: Specialty,
+          as: 'specialty',
+          attributes: ['name']
+        }
+      ]
+    });
+
+    return res.json({
+      erro: false,
+      mensagem: doctors.map(doctor => ({
+        id: doctor.id,
+        name: doctor.name,
+        email: doctor.email,
+        crm: doctor.crm,
+        endereco: doctor.endereco,
+        especialidade: doctor.specialty ? doctor.specialty.name : null
+      })),
+      id_usuario_logado: req.userId,
+    });
+  } catch (error) {
+    console.error(error); // Log the error for debugging
+    return res.status(400).json({
+      erro: true,
+      mensagem: "Nenhum usuário encontrado!!",
+    });
+  }
+});
+
 app.listen(8080, () => {
-  //console.log("Servidor Iniciado: Servidor Inicido : http://localhost:8080")
+  console.log("Servidor Iniciado: Servidor Inicido : http://localhost:8080")
 });
