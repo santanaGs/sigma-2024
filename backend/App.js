@@ -5,8 +5,11 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
 const { eAdmin } = require("./middlewares/auth");
+
 const Doctor = require("./models/user");
 const Specialty = require("./models/specialty");
+const Patient = require("./models/patient");
+const Enquiry = require("./models/enquiry");
 
 // USE LOCAL HOST
 const cors = require("cors");
@@ -52,10 +55,10 @@ app.post("/cadastrar", async (req, res) => {
     });
   }
 });
-// LOGIN DE USUARIO
+// LOGIN DE MEDICO
 app.post("/login", async (req, res) => {
   const doctor = await Doctor.findOne({
-    attributes: ["id", "name", "email", "password", "crm", "endereco"],
+    attributes: ["id", "name", "email", "password"],
     where: {
       email: req.body.email,
     },
@@ -89,7 +92,6 @@ app.post("/login", async (req, res) => {
     user,
   });
 });
-
 // GET ALL DOCTORS
 app.get("/medicos", async (req, res) => {
   try {
@@ -117,14 +119,89 @@ app.get("/medicos", async (req, res) => {
       id_usuario_logado: req.userId,
     });
   } catch (error) {
-    console.error(error); // Log the error for debugging
+    console.error(error); 
     return res.status(400).json({
       erro: true,
       mensagem: "Nenhum usuário encontrado!!",
     });
   }
 });
+// CADASTRO DE USUARIO
+app.post("/cadastrar/paciente", async (req, res) => {
 
+  var dados = req.body;
+  dados.password = await bcrypt.hash(dados.password, 8);
+
+  try {
+    await Patient.create(dados);
+    return res.json({
+      erro: false,
+      mensagem: "Paciente cadastrado com sucesso!!",
+    });
+  } catch (error) {
+    return res.status(400).json({
+      erro: true,
+      mensagem: "Error ao cadastrar o usuário!!" + error,
+    });
+  }
+});
+// LOGIN PACIENTE
+app.post("/login/paciente", async (req, res) => {
+  const patient = await Patient.findOne({
+    attributes: ["id","email", "password"],
+    where: {
+      email: req.body.email,
+    },
+  });
+  if (patient === null) {
+    return res.status(400).json({
+      erro: true,
+      mensagem: "Error: Usuário ou senha Incorreta!",
+    });
+  }
+
+  if (!(await bcrypt.compare(req.body.password, patient.password))) {
+    return res.status(400).json({
+      erro: true,
+      mensagem: "Error: Usuário ou senha Incorreta!",
+    });
+  }
+
+  var token = jwt.sign(
+    { id: patient.id },
+    "4F8U4O6JH18O74DG3A1FH8J7DV21MN1D4FD69Y97QW1ASD4F6GJ8HU9",
+    {
+      expiresIn: "7d",
+    }
+  );
+
+  return res.json({
+    erro: false,
+    mensagem: "Login realizado com sucesso!!",
+    token
+  });
+});
+// AGENDAR CONSULTA
+app.post("/consulta", eAdmin, async(req, res) => {
+  var dados = req.body;
+
+  try {
+    await Enquiry.create(dados);
+    return res.json({
+      erro: false,
+      mensagem: "Consulta cadastrado com sucesso!!",
+    });
+  } catch (error) {
+    return res.status(400).json({
+      erro: true,
+      mensagem: "Error ao fazer consulta" + error,
+    });
+  }
+})
+// SERVER RODANDO
 app.listen(8080, () => {
   console.log("Servidor Iniciado: Servidor Inicido : http://localhost:8080")
 });
+
+// LISTAR CONSULTAS DO PACIENTE
+// LISTAR CONSULTAS DO MEDICO

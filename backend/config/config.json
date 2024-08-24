@@ -1,21 +1,21 @@
 {
   "development": {
     "username": "root",
-    "password": "@Bisteca123#",
+    "password": "",
     "database": "sigma",
     "host": "localhost",
     "dialect": "mysql"
   },
   "test": {
     "username": "root",
-    "password": "@Bisteca123#",
+    "password": "",
     "database": "sigma",
     "host": "localhost",
     "dialect": "mysql"
   },
   "production": {
     "username": "root",
-    "password": "@Bisteca123#",
+    "password": "",
     "database": "sigma",
     "host": "localhost",
     "dialect": "mysql"
