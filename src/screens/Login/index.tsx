@@ -34,15 +34,29 @@ const Login: React.FC = () => {
         password: password,
       })
       .then((res) => {
-        console.log(res.data);
-        localStorage.setItem("name", res.data.user.name);
+        console.log('SUCESSO',res.data);
+        localStorage.setItem("id", res.data.doctor.id);
+        localStorage.setItem("name", res.data.doctor.name);
+        localStorage.setItem("token", res.data.token);
 
-        navigate("/agenda");
+        if(res && res.data){
+          navigate("/agenda");
+        }
+
+        return
       })
       .catch((err) => {
-        console.log(err);
+        console.log('Erro:', err); // Print the full error object
+        if (err.response) {
+          console.log('Resposta do servidor:', err.response.data);
+          console.log('Status do servidor:', err.response.status);
+        } else if (err.request) {
+          console.log('Erro na requisição:', err.request);
+        } else {
+          console.log('Erro ao configurar a requisição:', err.message);
+        }
         setError(true);
-      })
+      })      
       .finally(() => {
         setLoading(false);
       });

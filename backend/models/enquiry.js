@@ -54,5 +54,8 @@ const Enquiry = db.define("enquiries", {
   timestamps: true,
 });
 
+Enquiry.belongsTo(Patient, { foreignKey: 'paciente' });
+Enquiry.belongsTo(Doctor, { foreignKey: 'medico' });
+
 
 module.exports = Enquiry;

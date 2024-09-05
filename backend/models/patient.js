@@ -8,7 +8,7 @@ const Patient = db.define("patients", {
     allowNull: false,
     primaryKey: true,
   },
-  nome: {
+  name: {
     type: Sequelize.STRING,
     allowNull: false,
   },
@@ -45,6 +45,7 @@ const Patient = db.define("patients", {
 }, {
   timestamps: true,
 });
+
 
 
 module.exports = Patient;

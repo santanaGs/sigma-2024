@@ -89,7 +89,7 @@ app.post("/login", async (req, res) => {
     erro: false,
     mensagem: "Login realizado com sucesso!!",
     token,
-    user,
+    doctor,
   });
 });
 // GET ALL DOCTORS
@@ -128,6 +128,8 @@ app.get("/medicos", async (req, res) => {
 });
 // CADASTRO DE USUARIO
 app.post("/cadastrar/paciente", async (req, res) => {
+
+  console.log(req.body)
 
   var dados = req.body;
   dados.password = await bcrypt.hash(dados.password, 8);
@@ -198,6 +200,48 @@ app.post("/consulta", eAdmin, async(req, res) => {
     });
   }
 })
+// PEGAR CONSULTA
+app.get("/consultas/:id", eAdmin, async (req, res) => {
+  const id = req.params.id;
+
+  try {
+    const consultas = await Enquiry.findAll({
+      where: { medico: id }, 
+      include: [
+        {
+          model: Patient,
+          // Inclua todos os atributos do modelo Patient
+          attributes: { exclude: [] }, // Aqui excluímos nenhum atributo, ou seja, incluímos todos
+        },
+        {
+          model: Doctor,
+          attributes: ['id', 'name', 'especialidade'],
+        },
+      ],
+    });
+
+    if (consultas.length === 0) {
+      return res.status(404).json({
+        erro: true,
+        mensagem: "Nenhuma consulta encontrada para o médico fornecido",
+      });
+    }
+
+    return res.json({
+      erro: false,
+      dados: consultas,
+    });
+  } catch (error) {
+    return res.status(400).json({
+      erro: true,
+      mensagem: "Erro ao buscar consultas: " + error.message,
+    });
+  }
+});
+
+
+
+
 // SERVER RODANDO
 app.listen(8080, () => {
   console.log("Servidor Iniciado: Servidor Inicido : http://localhost:8080")

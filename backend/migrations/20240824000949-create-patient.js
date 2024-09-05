@@ -21,6 +21,12 @@ module.exports = {
       cpf: {
         type: Sequelize.STRING
       },
+      email: {
+        type: Sequelize.STRING
+      },
+      password: {
+        type: Sequelize.STRING
+      },
       cid_card: {
         type: Sequelize.STRING
       },

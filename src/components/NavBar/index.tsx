@@ -73,6 +73,7 @@ const NavBar: React.FC = () => {
         </NavButton>
         <NavButton
           onClick={() => {
+            localStorage.clear();
             navigate("/");
           }}
         >
