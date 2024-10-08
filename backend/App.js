@@ -16,7 +16,7 @@ const cors = require("cors");
 const { Op } = require("sequelize");
 
 app.use(express.json());
-// app.use(cors());
+app.use(cors());
 
 app.get("/backend", async (req, res) => {
   await Doctor.findAll({
@@ -262,8 +262,8 @@ app.get("/backend/consultas/:id", eAdmin, async (req, res) => {
 });
 
 // SERVER RODANDO
-app.listen(8072, () => {
-  console.log("Servidor Iniciado: Servidor Inicido : http://35.193.111.224:8072/sigma")
+app.listen(8080, () => {
+  console.log("Servidor Iniciado: Servidor Inicido : http://localhost:8080/sigma")
 });
 
 module.exports = app;
