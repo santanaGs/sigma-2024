@@ -1,25 +1,25 @@
 {
   "development": {
     "username": "root",
-    "password": "123",
-    "database": "sigma2024",
-    "host": "34.133.196.208",
+    "password": "",
+    "database": "sigma",
+    "host": "localhost",
     "dialect": "mysql",
     "port": 3306
   },
   "test": {
     "username": "root",
-    "password": "123",
-    "database": "sigma2024",
-    "host": "34.133.196.208",
+    "password": "",
+    "database": "sigma",
+    "host": "localhost",
     "dialect": "mysql",
     "port": 3306
   },
   "production": {
     "username": "root",
-    "password": "123",
-    "database": "sigma2024",
-    "host": "34.133.196.208",
+    "password": "",
+    "database": "sigma",
+    "host": "localhost",
     "dialect": "mysql",
     "port": 3306
   }

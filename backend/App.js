@@ -3,6 +3,8 @@ const app = express();
 
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const nodemailer = require("nodemailer");
+
 
 const { eAdmin } = require("./middlewares/auth");
 
@@ -10,6 +12,7 @@ const Doctor = require("./models/user");
 const Specialty = require("./models/specialty");
 const Patient = require("./models/patient");
 const Enquiry = require("./models/enquiry");
+const Contact = require("./models/contact")
 
 // USE LOCAL HOST
 const cors = require("cors");
@@ -123,7 +126,7 @@ app.get("/backend/medicos", async (req, res) => {
       id_usuario_logado: req.userId,
     });
   } catch (error) {
-    console.error(error); 
+    console.error(error);
     return res.status(400).json({
       erro: true,
       mensagem: "Nenhum usuário encontrado!!",
@@ -206,7 +209,7 @@ app.post("/backend/login/paciente", async (req, res) => {
   });
 });
 // AGENDAR CONSULTA
-app.post("/backend/consulta", eAdmin, async(req, res) => {
+app.post("/backend/consulta", eAdmin, async (req, res) => {
   var dados = req.body;
 
   try {
@@ -228,7 +231,7 @@ app.get("/backend/consultas/:id", eAdmin, async (req, res) => {
 
   try {
     const consultas = await Enquiry.findAll({
-      where: { medico: id }, 
+      where: { medico: id },
       include: [
         {
           model: Patient,
@@ -260,6 +263,89 @@ app.get("/backend/consultas/:id", eAdmin, async (req, res) => {
     });
   }
 });
+
+// CADASTRO DE CONTATO
+app.post("/backend/contato", async (req, res) => {
+  const { name, email, message } = req.body;
+
+  if (!name || !email || !message) {
+    return res.status(400).json({
+      erro: true,
+      mensagem: "Todos os campos (nome, email, mensagem) são obrigatórios!",
+    });
+  }
+
+  try {
+    await Contact.create({ name, email, message });
+    return res.json({
+      erro: false,
+      mensagem: "Contato enviado com sucesso!",
+    });
+  } catch (error) {
+    return res.status(400).json({
+      erro: true,
+      mensagem: "Erro ao enviar contato: " + error.message,
+    });
+  }
+});
+
+const gerarSenhaAleatoria = () => {
+  return Math.floor(100000 + Math.random() * 900000).toString();
+};
+
+// REDEFINIR SENHA
+app.post("/backend/redefinir-senha", async (req, res) => {
+  const { email } = req.body;
+
+  const user = await Doctor.findOne({ where: { email } });
+  const patient = await Patient.findOne({ where: { email } });
+
+  if (!user && !patient) {
+    return res.status(400).json({
+      erro: true,
+      mensagem: "Email não encontrado!",
+    });
+  }
+
+  const novaSenha = gerarSenhaAleatoria();
+  const senhaCriptografada = await bcrypt.hash(novaSenha, 8);
+
+  if (user) {
+    await Doctor.update({ password: senhaCriptografada }, { where: { email } });
+  } else if (patient) {
+    await Patient.update({ password: senhaCriptografada }, { where: { email } });
+  }
+
+  var transport = nodemailer.createTransport({
+    host: "sandbox.smtp.mailtrap.io",
+    port: 2525,
+    auth: {
+      user: "ffafef615d8ee5",
+      pass: "99b1928c36d028"
+    }
+  });
+
+  const mailOptions = {
+    from: process.env.EMAIL_USER,
+    to: email,
+    subject: "Redefinição de Senha",
+    text: `Sua nova senha é: ${novaSenha}`,
+  };
+
+  transport.sendMail(mailOptions, (error, info) => {
+    if (error) {
+      return res.status(500).json({
+        erro: true,
+        mensagem: "Erro ao enviar email: " + error.message,
+      });
+    }
+    return res.json({
+      erro: false,
+      mensagem: "Nova senha enviada para seu email!",
+    });
+  });
+});
+
 
 // SERVER RODANDO
 app.listen(8080, () => {
