@@ -9,7 +9,7 @@ interface InputType {
   type: string;
   placeholder: string;
   onChange?: React.ChangeEventHandler<HTMLInputElement>;
-  password: boolean;
+  password?: boolean;
 }
 
 const InputS: React.FC<InputType> = ({

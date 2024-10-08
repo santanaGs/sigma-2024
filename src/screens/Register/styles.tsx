@@ -7,7 +7,7 @@ export const Background = styled.div`
     #44a1a0
   ); /* Gradiente diagonal */
   width: 100%;
-  height: 100ch;
+  height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -65,3 +65,18 @@ export const ButtosContaner = styled.div`
   align-items: center;
   gap: 1rem;
 `;
+
+
+export const SelectS = styled.select`
+  width: 90%;
+  padding: 1rem;
+  border-radius: 1rem;
+  border: 1px solid #0b4a50;
+  font-size: 1.5rem;
+  font-weight: 500;
+  color: #0b4a50;
+
+  &::placeholder {
+    color: #0b4a50;
+  }
+`

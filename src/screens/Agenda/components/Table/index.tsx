@@ -8,14 +8,14 @@ interface Consulta {
   id: string;
   patient: {
     name: string;
+    idade: string;      // Adicionando idade
+    cid_card: string;   // Renomeando para corresponder à resposta da API
+    sangue: string;
+    logradouro: string; // Adicionando logradouro se necessário
+    numero: string;
   };
   data: string;
   horario: string;
-  idade: string;
-  cidCard: string;
-  sangue: string;
-  logradouro: string;
-  numero: string;
 }
 
 const Table: React.FC = () => {
@@ -43,14 +43,14 @@ const Table: React.FC = () => {
           return;
         }
 
-        const response = await axios.get(`http://localhost:8080/consultas/${id}`, {
+        const response = await axios.get(`http://35.193.111.224/backend/consultas/${id}`, {
           headers: {
             'Authorization': `Bearer ${token}`
           }
         });
 
-        setConsultas(response.data.dados);
-      } catch (err) {
+        setConsultas(response.data.dados); // Certifique-se de que isso está correto
+      } catch (err: any) {
         setError(`Erro ao buscar consultas: ${err.message}`);
       } finally {
         setLoading(false);
@@ -64,12 +64,12 @@ const Table: React.FC = () => {
   // Função para formatar a data para o padrão pt-BR (dia, mês e ano)
   const formatDateToPtBr = (isoDate: string): string => {
     const date = new Date(isoDate);
-    const options = {
+    const options: Intl.DateTimeFormatOptions = {
       day: '2-digit',
       month: '2-digit',
       year: 'numeric',
     };
-
+  
     return new Intl.DateTimeFormat('pt-BR', options).format(date);
   };
 
@@ -95,7 +95,7 @@ const Table: React.FC = () => {
                 setIdade(item.patient.idade);
                 setCidCard(item.patient.cid_card);
                 setSangue(item.patient.sangue);
-                setEndereco(item.patient.endereco);
+                setEndereco(item.patient.logradouro); // Se necessário
                 setNumero(item.patient.numero);
               }}
             >

@@ -1,10 +1,10 @@
-import Login from "@/screens/Login";
-import Main from "@/screens/Main";
-import Agenda from "@/screens/Agenda";
-import Suporte from "@/screens/Suporte";
-import Prontuario from "@/screens/Prontuario";
+import Login from "../src/screens/Login";
+import Main from "../src/screens/Main";
+import Agenda from "../src/screens/Agenda";
+import Suporte from "../src/screens/Suporte";
+import Prontuario from "../src/screens/Prontuario";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Register from "@/screens/Register";
+import Register from "../src/screens/Register";
 
 function App() {
   return (

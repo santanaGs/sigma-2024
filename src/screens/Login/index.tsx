@@ -29,17 +29,17 @@ const Login: React.FC = () => {
     e.preventDefault(); // Evita o recarregamento da página
     setLoading(true);
     axios
-      .post("http://localhost:8080/login", {
+      .post("http://35.193.111.224/backend/login", {
         email: email,
         password: password,
       })
       .then((res) => {
-        console.log('SUCESSO',res.data);
+        console.log('SUCESSO', res.data);
         localStorage.setItem("id", res.data.doctor.id);
         localStorage.setItem("name", res.data.doctor.name);
         localStorage.setItem("token", res.data.token);
 
-        if(res && res.data){
+        if (res && res.data) {
           navigate("/agenda");
         }
 
@@ -56,7 +56,7 @@ const Login: React.FC = () => {
           console.log('Erro ao configurar a requisição:', err.message);
         }
         setError(true);
-      })      
+      })
       .finally(() => {
         setLoading(false);
       });
@@ -68,6 +68,7 @@ const Login: React.FC = () => {
       <Content onSubmit={handleSubmit}>
         <img src={logo} alt="" />
         <InputS
+          password={false}
           placeholder="Email"
           type="email"
           onChange={(e: ChangeEvent<HTMLInputElement>) => {

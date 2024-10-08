@@ -17,7 +17,7 @@ interface ModalProps {
   sangue: string;
   endereco: string;
   numero: string;
-  onClick: (event: MouseEvent<HTMLButtonElement, MouseEvent>) => void;
+  onClick: (event: React.MouseEvent<HTMLButtonElement>) => void;
 }
 
 const Modal: React.FC<ModalProps> = (props: ModalProps) => {
