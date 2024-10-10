@@ -4,6 +4,8 @@ const app = express();
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const nodemailer = require("nodemailer");
+const moment = require("moment");
+
 
 
 const { eAdmin } = require("./middlewares/auth");
@@ -235,6 +237,18 @@ app.post("/backend/consulta", eAdmin, async (req, res) => {
   const dados = req.body;
 
   try {
+    // Formatar a data recebida para o formato ISO (YYYY-MM-DD)
+    const dataFormatada = moment(dados.data, ["DD/MM/YYYY", "YYYY-MM-DD"], true);
+    
+    if (!dataFormatada.isValid()) {
+      return res.status(400).json({
+        erro: true,
+        mensagem: "Data inválida. Utilize o formato DD/MM/YYYY ou YYYY-MM-DD.",
+      });
+    }
+
+    dados.data = dataFormatada.format("YYYY-MM-DD"); // Formato desejado para o banco
+
     const medico = await Doctor.findOne({ where: { especialidade: dados.modalidade } });
 
     if (!medico) {
@@ -394,6 +408,48 @@ app.post("/backend/redefinir-senha", async (req, res) => {
     });
   });
 });
+
+// LISTAR CONSULTAS DO PACIENTE
+app.get("/backend/pacientes/:id/consultas", async (req, res) => {
+  const pacienteId = req.params.id;
+
+  try {
+    const consultas = await Enquiry.findAll({
+      where: { paciente: pacienteId },
+      include: [
+        {
+          model: Doctor,
+          attributes: ['id', 'name', 'crm', 'especialidade'], 
+          include: [
+            {
+              model: Specialty,
+              as: 'specialty', // Certifique-se de que esse alias corresponda ao definido no modelo
+              attributes: ['name'], // Inclui apenas o nome da especialidade
+            },
+          ],
+        },
+      ],
+    });
+
+    if (consultas.length === 0) {
+      return res.status(404).json({
+        erro: true,
+        mensagem: "Nenhuma consulta encontrada para o paciente fornecido.",
+      });
+    }
+
+    return res.json({
+      erro: false,
+      dados: consultas,
+    });
+  } catch (error) {
+    return res.status(400).json({
+      erro: true,
+      mensagem: "Erro ao buscar consultas: " + error.message,
+    });
+  }
+});
+
 
 // SERVER RODANDO
 app.listen(8080, () => {
