@@ -28,7 +28,7 @@ const Register: React.FC = () => {
     setError(null); // Reset error state before submitting
 
     axios
-      .post("http://35.193.111.224/backend/cadastrar", {
+      .post("http://localhost:8080/backend/cadastrar", {
         name: name,
         email: email,
         password: password,

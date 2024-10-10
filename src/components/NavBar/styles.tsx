@@ -18,7 +18,9 @@ export const MedicoDiv = styled.div`
   border-bottom: 1px solid #145da0;
 `;
 
-export const MedicoImagem = styled.img``;
+export const MedicoImagem = styled.img`
+width: 150px;
+`;
 
 export const MedicoName = styled.p`
   font-size: 2rem;

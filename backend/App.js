@@ -174,6 +174,28 @@ app.post("/backend/cadastrar/paciente", async (req, res) => {
   }
 });
 
+app.get("/backend/especialidades", async (req, res) => {
+  await Specialty.findAll({
+    attributes: ["id", "name"],
+    order: [["id", "ASC"]],
+  })
+    .then((specialties) => {
+      return res.json({
+        erro: false,
+        mensagem: {
+          specialties,
+        },
+        id_usuario_logado: req.userId,
+      });
+    })
+    .catch(() => {
+      return res.status(400).json({
+        erro: true,
+        mensagem: "Nenhum usuário encontrado!!",
+      });
+    });
+});
+
 // LOGIN PACIENTE
 app.post("/backend/login/paciente", async (req, res) => {
   const patient = await Patient.findOne({
@@ -210,21 +232,34 @@ app.post("/backend/login/paciente", async (req, res) => {
 });
 // AGENDAR CONSULTA
 app.post("/backend/consulta", eAdmin, async (req, res) => {
-  var dados = req.body;
+  const dados = req.body;
 
   try {
+    const medico = await Doctor.findOne({ where: { especialidade: dados.modalidade } });
+
+    if (!medico) {
+      return res.status(404).json({
+        erro: true,
+        mensagem: "Médico com a especialidade especificada não encontrado.",
+      });
+    }
+
+    dados.medico = medico.id;
+
     await Enquiry.create(dados);
+
     return res.json({
       erro: false,
-      mensagem: "Consulta cadastrado com sucesso!!",
+      mensagem: "Consulta cadastrada com sucesso!",
     });
   } catch (error) {
     return res.status(400).json({
       erro: true,
-      mensagem: "Error ao fazer consulta" + error,
+      mensagem: "Erro ao fazer consulta: " + error.message,
     });
   }
-})
+});
+
 // PEGAR CONSULTA
 app.get("/backend/consultas/:id", eAdmin, async (req, res) => {
   const id = req.params.id;
@@ -326,11 +361,25 @@ app.post("/backend/redefinir-senha", async (req, res) => {
   });
 
   const mailOptions = {
-    from: process.env.EMAIL_USER,
+    from: "no-reply@sigma.com.br",
     to: email,
     subject: "Redefinição de Senha",
-    text: `Sua nova senha é: ${novaSenha}`,
+    text: `
+      Olá,
+  
+      Recebemos um pedido para redefinir sua senha. Sua nova senha é:
+  
+      **${novaSenha}**
+  
+      Se você não solicitou a redefinição de senha, por favor, desconsidere este email.
+  
+      Agradecemos por utilizar nossos serviços!
+  
+      Atenciosamente,
+      Equipe SIGMA
+    `,
   };
+  
 
   transport.sendMail(mailOptions, (error, info) => {
     if (error) {
@@ -346,10 +395,9 @@ app.post("/backend/redefinir-senha", async (req, res) => {
   });
 });
 
-
 // SERVER RODANDO
 app.listen(8080, () => {
-  console.log("Servidor Iniciado: Servidor Inicido : http://localhost:8080/sigma")
+  console.log("Servidor Iniciado: Servidor Inicido : http://localhost:8080/backend")
 });
 
 module.exports = app;

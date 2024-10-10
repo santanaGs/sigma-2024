@@ -35,7 +35,7 @@ const NavBar: React.FC = () => {
   return (
     <DivS>
       <MedicoDiv>
-        <MedicoImagem src="https://imgur.com/51muZcN.png" alt="" />
+        <MedicoImagem src="https://imgur.com/XgH8VgQ.png" alt="" />
         <MedicoName>Drª {name}</MedicoName>
       </MedicoDiv>
       <Nav>

@@ -106,11 +106,12 @@ const Prontuario: React.FC = () => {
           <strong>
             <h2 className="titlecontainer2">Fale Conosco</h2><br />
             <p>(11) 99999-9999<br />Segunda á Sexta das 08h ás 19h</p><br />
-            <p><u>Suporte@Suporte.com.br</u></p><br />
+            <p><u>suporte@sigma.com.br</u></p><br />
             <p><u>Endereço:</u> R. Espírito Santo, 277 - Santo<br /> Antônio, São Caetano do Sul - SP,<br /> 09530-905 </p><br />
             <p>Veja no mapa:</p>
           </strong>
-          <iframe src="https://www.youtube.com/embed/uXWycyeTeCs" width={500} height={330}></iframe>
+          <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3655.5902148622004!2d-46.57582742548516!3d-23.619025063711646!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x94ce5ceb39423fb7%3A0x543148b172f303c8!2sR.%20Esp%C3%ADrito%20Santo%2C%20277%20-%20Santo%20Ant%C3%B4nio%2C%20S%C3%A3o%20Caetano%20do%20Sul%20-%20SP%2C%2009530-700!5e0!3m2!1spt-BR!2sbr!4v1728429465171!5m2!1spt-BR!2sbr" width="500" height="300" style={{border: 'none'}} allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+          {/* <iframe src="https://www.youtube.com/embed/uXWycyeTeCs" width={500} height={330}></iframe> */}
         </div>
       </div>
     </div>

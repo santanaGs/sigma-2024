@@ -43,7 +43,7 @@ const Table: React.FC = () => {
           return;
         }
 
-        const response = await axios.get(`http://35.193.111.224/backend/consultas/${id}`, {
+        const response = await axios.get(`http://localhost:8080/backend/consultas/${id}`, {
           headers: {
             'Authorization': `Bearer ${token}`
           }
@@ -92,11 +92,12 @@ const Table: React.FC = () => {
               onClick={() => {
                 setModalVisible(true);
                 setNome(item.patient.name);
-                setIdade(item.patient.idade);
+                // setIdade(item.patient.idade);
+                setIdade("21 anos");
                 setCidCard(item.patient.cid_card);
-                setSangue(item.patient.sangue);
-                setEndereco(item.patient.logradouro); // Se necessário
-                setNumero(item.patient.numero);
+                setSangue("A+");
+                setEndereco(item.patient.endereco); // Se necessário
+                setNumero("0");
               }}
             >
               <Td>{item.patient.name}</Td>

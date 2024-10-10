@@ -9,7 +9,7 @@ import {
   Submit,
 } from "./styles";
 
-import logo from "@/assets/logo.svg";
+import logo from "@/assets/VERDE.jpg";
 import { ChangeEvent, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -19,17 +19,19 @@ const Login: React.FC = () => {
   // Navigation
   const navigate = useNavigate();
   // Variables
-  const [email, setEmail] = useState<string | null>();
-  const [password, setPassword] = useState<string | null>();
+  const [email, setEmail] = useState<string | null>("");
+  const [password, setPassword] = useState<string | null>("");
   const [error, setError] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
+  const [forgotPasswordSuccess, setForgotPasswordSuccess] = useState<boolean>(false);
 
-  // Function
+  // Function for login
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault(); // Evita o recarregamento da página
     setLoading(true);
     axios
-      .post("http://35.193.111.224/backend/login", {
+      // .post("http://35.193.111.224/backend/login", {
+      .post("http://localhost:8080/backend/login", {
         email: email,
         password: password,
       })
@@ -42,8 +44,6 @@ const Login: React.FC = () => {
         if (res && res.data) {
           navigate("/agenda");
         }
-
-        return
       })
       .catch((err) => {
         console.log('Erro:', err); // Print the full error object
@@ -62,15 +62,39 @@ const Login: React.FC = () => {
       });
   };
 
+  // Function for forgot password
+  const handleForgotPassword = async () => {
+    if (!email) {
+      alert("Por favor, insira seu email.");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const response = await axios.post("http://localhost:8080/backend/redefinir-senha", {
+        email: email,
+      });
+      console.log(response.data);
+      alert("Instruções para redefinição de senha foram enviadas para o seu email.");
+      setForgotPasswordSuccess(true);
+    } catch (error) {
+      console.error("Erro ao enviar a solicitação de redefinição de senha:", error);
+      alert("Erro ao enviar a solicitação de redefinição de senha. Tente novamente.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   // Rendering
   return (
     <Background>
       <Content onSubmit={handleSubmit}>
-        <img src={logo} alt="" />
+        <img style={{width: 275, marginTop: "-7%"}} src={logo} alt="" />
         <InputS
           password={false}
           placeholder="Email"
           type="email"
+          value={email}
           onChange={(e: ChangeEvent<HTMLInputElement>) => {
             setEmail(e.target.value);
           }}
@@ -79,11 +103,12 @@ const Login: React.FC = () => {
           password
           placeholder="Senha"
           type="password"
+          value={password}
           onChange={(e: ChangeEvent<HTMLInputElement>) => {
             setPassword(e.target.value);
           }}
         />
-        {error && <p style={{ color: "red" }}>Senha ou usuario incorreto</p>}
+        {error && <p style={{ color: "red" }}>Senha ou usuário incorreto</p>}
         {loading ? (
           <Loading>
             <ClipLoader color={"#0b4a50"} loading={true} size={50} />
@@ -93,7 +118,7 @@ const Login: React.FC = () => {
         )}
 
         <ButtosContaner>
-          <Forgot>Esqueci minha senha</Forgot>
+          <Forgot onClick={handleForgotPassword}>Esqueci minha senha</Forgot>
           <Register
             onClick={() => {
               navigate("/register");
