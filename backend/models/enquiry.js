@@ -50,6 +50,15 @@ const Enquiry = db.define("enquiries", {
     allowNull: false,
     type: Sequelize.STRING
   },
+  resumo: {
+    type: Sequelize.TEXT('long'), 
+    allowNull: true,
+  },
+  status: {
+    type: Sequelize.ENUM('pendente', 'finalizada'),
+    allowNull: false,
+    defaultValue: 'pendente', 
+  },
 }, {
   timestamps: true,
 });

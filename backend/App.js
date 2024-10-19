@@ -239,7 +239,7 @@ app.post("/backend/consulta", eAdmin, async (req, res) => {
   try {
     // Formatar a data recebida para o formato ISO (YYYY-MM-DD)
     const dataFormatada = moment(dados.data, ["DD/MM/YYYY", "YYYY-MM-DD"], true);
-    
+
     if (!dataFormatada.isValid()) {
       return res.status(400).json({
         erro: true,
@@ -280,7 +280,13 @@ app.get("/backend/consultas/:id", eAdmin, async (req, res) => {
 
   try {
     const consultas = await Enquiry.findAll({
-      where: { medico: id },
+      where: {
+        medico: id,
+        data: {
+          [Op.gte]: new Date(),
+        },
+        status: 'pendente'
+      },
       include: [
         {
           model: Patient,
@@ -393,7 +399,7 @@ app.post("/backend/redefinir-senha", async (req, res) => {
       Equipe SIGMA
     `,
   };
-  
+
 
   transport.sendMail(mailOptions, (error, info) => {
     if (error) {
@@ -419,7 +425,7 @@ app.get("/backend/pacientes/:id/consultas", async (req, res) => {
       include: [
         {
           model: Doctor,
-          attributes: ['id', 'name', 'crm', 'especialidade'], 
+          attributes: ['id', 'name', 'crm', 'especialidade'],
           include: [
             {
               model: Specialty,
@@ -446,6 +452,45 @@ app.get("/backend/pacientes/:id/consultas", async (req, res) => {
     return res.status(400).json({
       erro: true,
       mensagem: "Erro ao buscar consultas: " + error.message,
+    });
+  }
+});
+
+
+app.put("/backend/consulta/:id/resumo", eAdmin, async (req, res) => {
+  const id = req.params.id;
+  const { resumo } = req.body;
+
+  if (!resumo) {
+    return res.status(400).json({
+      erro: true,
+      mensagem: "O campo 'resumo' é obrigatório!",
+    });
+  }
+
+  try {
+    const consulta = await Enquiry.findByPk(id);
+
+    if (!consulta) {
+      return res.status(404).json({
+        erro: true,
+        mensagem: "Consulta não encontrada!",
+      });
+    }
+
+    consulta.resumo = resumo;
+    consulta.status = "finalizada"; 
+    await consulta.save();
+
+    return res.json({
+      erro: false,
+      mensagem: "Resumo atualizado com sucesso!",
+      dados: consulta,
+    });
+  } catch (error) {
+    return res.status(400).json({
+      erro: true,
+      mensagem: "Erro ao atualizar o resumo: " + error.message,
     });
   }
 });

@@ -47,14 +47,14 @@ const NavBar: React.FC = () => {
           <img src={agenda} alt="" />
           <ButtonTitle>Agenda</ButtonTitle>
         </NavButton>
-        <NavButton
+        {/* <NavButton
           onClick={() => {
             navigate("/prontuario");
           }}
         >
           <img src={prontuario} alt="" />
           <ButtonTitle>Prontúario</ButtonTitle>
-        </NavButton>
+        </NavButton> */}
         <NavButton
           onClick={() => {
             navigate("/dashboard");

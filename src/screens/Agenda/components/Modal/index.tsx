@@ -17,7 +17,10 @@ interface ModalProps {
   sangue: string;
   endereco: string;
   numero: string;
+  resumo: string; // Adicionando a prop para o resumo
   onClick: (event: React.MouseEvent<HTMLButtonElement>) => void;
+  onResumoChange: (newResumo: string) => void; // Função para atualizar o resumo
+  onUpdateResumo: () => void; // Função para atualizar o resumo na API
 }
 
 const Modal: React.FC<ModalProps> = (props: ModalProps) => {
@@ -39,7 +42,7 @@ const Modal: React.FC<ModalProps> = (props: ModalProps) => {
             <p>{props.cidCard}</p>
           </InfosDiv>
           <InfosDiv>
-            <Label>Tipo Sanguineo:</Label>
+            <Label>Tipo Sanguíneo:</Label>
             <p>{props.sangue}</p>
           </InfosDiv>
           <InfosDiv>
@@ -51,11 +54,18 @@ const Modal: React.FC<ModalProps> = (props: ModalProps) => {
             <p>{props.numero}</p>
           </InfosDiv>
         </Container>
-        <p>Resumo da consulta:</p>
-        <TextArea />
+        <InfosDiv>
+          <Label>Resumo da consulta:</Label>
+          <TextArea 
+            value={props.resumo} // O valor do resumo
+            onChange={(e) => props.onResumoChange(e.target.value)} // Atualiza o resumo
+            placeholder="Digite o resumo da consulta aqui..."
+          />
+        </InfosDiv>
         <BottomDiv>
-          <input type="file" name="" id="" />
-          <Submit onClick={props.onClick}>Enviar</Submit>
+          {/* <input type="file" name="" id="" /> */}
+          <Submit onClick={props.onClick}>Fechar</Submit>
+          <Submit onClick={props.onUpdateResumo}>Enviar</Submit> {/* Chama a função para atualizar o resumo */}
         </BottomDiv>
       </Content>
     </ModalS>

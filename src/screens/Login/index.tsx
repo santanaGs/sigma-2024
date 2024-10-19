@@ -42,7 +42,7 @@ const Login: React.FC = () => {
         localStorage.setItem("token", res.data.token);
 
         if (res && res.data) {
-          navigate("/agenda");
+          navigate("/dashboard");
         }
       })
       .catch((err) => {

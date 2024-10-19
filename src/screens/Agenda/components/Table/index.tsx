@@ -16,6 +16,7 @@ interface Consulta {
   };
   data: string;
   horario: string;
+  resumo?: string; // Adicionando o campo resumo
 }
 
 const Table: React.FC = () => {
@@ -26,13 +27,13 @@ const Table: React.FC = () => {
   const [sangue, setSangue] = useState("");
   const [endereco, setEndereco] = useState("");
   const [numero, setNumero] = useState("");
+  const [resumo, setResumo] = useState(""); // Estado para o resumo
   const [modalVisible, setModalVisible] = useState(false);
   const [consultas, setConsultas] = useState<Consulta[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    // Função assíncrona para buscar consultas
     const fetchConsultas = async () => {
       try {
         const id = localStorage.getItem("id");
@@ -49,7 +50,7 @@ const Table: React.FC = () => {
           }
         });
 
-        setConsultas(response.data.dados); // Certifique-se de que isso está correto
+        setConsultas(response.data.dados);
       } catch (err: any) {
         setError(`Erro ao buscar consultas: ${err.message}`);
       } finally {
@@ -57,11 +58,9 @@ const Table: React.FC = () => {
       }
     };
 
-    // Chamar a função assíncrona
     fetchConsultas();
   }, []);
 
-  // Função para formatar a data para o padrão pt-BR (dia, mês e ano)
   const formatDateToPtBr = (isoDate: string): string => {
     const date = new Date(isoDate);
     const options: Intl.DateTimeFormatOptions = {
@@ -73,7 +72,32 @@ const Table: React.FC = () => {
     return new Intl.DateTimeFormat('pt-BR', options).format(date);
   };
 
-  // Renderização condicional
+  const updateResumo = async (id: string) => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        setError('Token não encontrado');
+        return;
+      }
+
+      await axios.put(`http://localhost:8080/backend/consulta/${id}/resumo`, { resumo }, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      setConsultas(prev => prev.map(consulta => 
+        consulta.id === id ? { ...consulta, resumo } : consulta
+      ));
+
+      alert("Resumo atualizado com sucesso!");
+
+      setModalVisible(false);
+    } catch (err: any) {
+      setError(`Erro ao atualizar resumo: ${err.message}`);
+    }
+  };
+
   if (loading) return <p>Carregando...</p>;
   if (error) return <p>{error}</p>;
 
@@ -92,12 +116,12 @@ const Table: React.FC = () => {
               onClick={() => {
                 setModalVisible(true);
                 setNome(item.patient.name);
-                // setIdade(item.patient.idade);
-                setIdade("21 anos");
+                setIdade("21 anos"); 
                 setCidCard(item.patient.cid_card);
-                setSangue("A+");
-                setEndereco(item.patient.endereco); // Se necessário
-                setNumero("0");
+                setSangue("A+"); 
+                setEndereco(item.patient.logradouro); 
+                setNumero("0"); 
+                setResumo(item.resumo || ""); 
               }}
             >
               <Td>{item.patient.name}</Td>
@@ -116,6 +140,12 @@ const Table: React.FC = () => {
           sangue={sangue}
           endereco={endereco}
           numero={numero}
+          resumo={resumo}
+          onResumoChange={(newResumo) => setResumo(newResumo)} 
+          onUpdateResumo={() => {
+            const consultaId = consultas.find(c => c.patient.name === nome)?.id; 
+            if (consultaId) updateResumo(consultaId); 
+          }}
         />
       )}
     </>
