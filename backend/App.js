@@ -237,7 +237,7 @@ app.post("/backend/consulta", eAdmin, async (req, res) => {
   const dados = req.body;
 
   try {
-    // Formatar a data recebida para o formato ISO (YYYY-MM-DD)
+
     const dataFormatada = moment(dados.data, ["DD/MM/YYYY", "YYYY-MM-DD"], true);
 
     if (!dataFormatada.isValid()) {
