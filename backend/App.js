@@ -429,8 +429,8 @@ app.get("/backend/pacientes/:id/consultas", async (req, res) => {
           include: [
             {
               model: Specialty,
-              as: 'specialty', // Certifique-se de que esse alias corresponda ao definido no modelo
-              attributes: ['name'], // Inclui apenas o nome da especialidade
+              as: 'specialty', 
+              attributes: ['name'],
             },
           ],
         },
@@ -494,6 +494,36 @@ app.put("/backend/consulta/:id/resumo", eAdmin, async (req, res) => {
     });
   }
 });
+
+app.delete("/backend/consultas/:id", async (req, res) => {
+  const consultaId = req.params.id;
+
+  try {
+    // Tente encontrar a consulta pelo ID
+    const consulta = await Enquiry.findByPk(consultaId);
+    
+    if (!consulta) {
+      return res.status(404).json({
+        erro: true,
+        mensagem: "Consulta não encontrada.",
+      });
+    }
+
+    // Deletar a consulta
+    await consulta.destroy();
+
+    return res.json({
+      erro: false,
+      mensagem: "Consulta excluída com sucesso.",
+    });
+  } catch (error) {
+    return res.status(400).json({
+      erro: true,
+      mensagem: "Erro ao excluir consulta: " + error.message,
+    });
+  }
+});
+
 
 
 // SERVER RODANDO
