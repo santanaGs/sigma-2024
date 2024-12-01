@@ -2,24 +2,22 @@ import { TableBody, TableHead, TableHeadItem, TableS, Td, Tr } from "./styles";
 import Modal from "../Modal";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import Swal from "sweetalert2"; // Importa o SweetAlert2
-import "sweetalert2/dist/sweetalert2.min.css"; // Importa os estilos do SweetAlert2
 
 // Definição do tipo Consulta
 interface Consulta {
   id: string;
   patient: {
     name: string;
-    idade: string;     
-    cid_card: string;  
+    idade: string;      // Adicionando idade
+    cid_card: string;   // Renomeando para corresponder à resposta da API
     sangue: string;
-    endereco: string; 
+    endereco: string; // Adicionando logradouro se necessário
     numero: string;
   };
   data: string;
   horario: string;
-  status: string;
-  resumo?: string;
+  resumo?: string; 
+  status?: string;
 }
 
 const Table: React.FC = () => {
@@ -36,23 +34,28 @@ const Table: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  // Função para buscar as consultas
   const fetchConsultas = async () => {
     try {
       const id = localStorage.getItem("id");
       const token = localStorage.getItem("token");
 
       if (!id || !token) {
-        setError("ID ou token não encontrado");
+        setError('ID ou token não encontrado');
         return;
       }
 
-      const response = await axios.get(`http://34.55.145.113:3000/backend/consultas/${id}`, {
+      // http://localhost:3000/backend/consultas/1/historico
+
+      const response = await axios.get(`http://34.55.145.113:3000/backend/consultas/${id}/historico`, {
         headers: {
-          Authorization: `Bearer ${token}`,
-        },
+          'Authorization': `Bearer ${token}`
+        }
       });
 
       setConsultas(response.data.dados);
+
+      console.log(response.data)
     } catch (err: any) {
       setError(`Nenhuma consulta localizada`);
     } finally {
@@ -60,46 +63,39 @@ const Table: React.FC = () => {
     }
   };
 
+  // Efeito para carregar as consultas ao montar o componente
   useEffect(() => {
     fetchConsultas();
   }, []);
 
+  // Função para formatar a data
   const formatDateToPtBr = (isoDate: string): string => {
     const date = new Date(isoDate);
     const options: Intl.DateTimeFormatOptions = {
-      day: "2-digit",
-      month: "2-digit",
-      year: "numeric",
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
     };
 
-    return new Intl.DateTimeFormat("pt-BR", options).format(date);
+    return new Intl.DateTimeFormat('pt-BR', options).format(date);
   };
 
   const updateResumo = async (id: string) => {
     try {
       const token = localStorage.getItem("token");
       if (!token) {
-        setError("Token não encontrado");
+        setError('Token não encontrado');
         return;
       }
 
-      await axios.put(
-        `http://34.55.145.113:3000/backend/consulta/${id}/resumo`,
-        { resumo },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+      await axios.put(`http://34.55.145.113:3000/backend/consulta/${id}/resumo`, { resumo }, {
+        headers: {
+          'Authorization': `Bearer ${token}`
         }
-      );
-
-      await Swal.fire({
-        icon: "success",
-        title: "Resumo atualizado com sucesso!",
-        showConfirmButton: false,
-        timer: 2000,
       });
 
+      alert("Resumo atualizado com sucesso!");
+      
       // Atualizando as consultas novamente após a alteração
       fetchConsultas(); // Isso vai buscar a lista atualizada
 
@@ -109,26 +105,27 @@ const Table: React.FC = () => {
     }
   };
 
+  // Se está carregando, exibe a mensagem
   if (loading) return <p>Carregando...</p>;
 
-  if (error)
-    return (
-      <div
-        style={{
-          backgroundColor: "#f8d7da",
-          border: "1px solid #f5c6cb",
-          color: "#721c24",
-          padding: "15px",
-          borderRadius: "5px",
-          textAlign: "center",
-          marginTop: "20px",
-          fontWeight: "bold",
-          marginInline: "auto",
-        }}
-      >
-        <p>{error}</p>
-      </div>
-    );
+  // Se houve erro, exibe a mensagem de erro
+  if (error) return (
+    <div
+      style={{
+        backgroundColor: '#f8d7da',
+        border: '1px solid #f5c6cb',
+        color: '#721c24',
+        padding: '15px',
+        borderRadius: '5px',
+        textAlign: 'center',
+        marginTop: '20px',
+        fontWeight: 'bold',
+        marginInline: 'auto',
+      }}
+    >
+      <p>{error}</p>
+    </div>
+  );
 
   return (
     <>
@@ -137,6 +134,7 @@ const Table: React.FC = () => {
           <TableHeadItem>Nome</TableHeadItem>
           <TableHeadItem>Data</TableHeadItem>
           <TableHeadItem>Horário</TableHeadItem>
+          <TableHeadItem>Resumo</TableHeadItem>
           <TableHeadItem>Status</TableHeadItem>
         </TableHead>
         <TableBody>
@@ -146,17 +144,18 @@ const Table: React.FC = () => {
               onClick={() => {
                 setModalVisible(true);
                 setNome(item.patient.name);
-                setIdade("21 anos");
+                setIdade("21 anos"); 
                 setCidCard(item.patient.cid_card);
-                setSangue("A+");
-                setEndereco(item.patient.endereco);
-                setNumero("0");
-                setResumo(item.resumo || "");
+                setSangue("A+"); 
+                setEndereco(item.patient.endereco); 
+                setNumero("0"); 
+                setResumo(item.resumo || ""); 
               }}
             >
               <Td>{item.patient.name}</Td>
               <Td>{formatDateToPtBr(item.data)}</Td>
               <Td>{item.horario}</Td>
+              <Td>{item.resumo}</Td>
               <Td>{item.status}</Td>
             </Tr>
           ))}
@@ -167,7 +166,7 @@ const Table: React.FC = () => {
         <Modal
           onClick={() => {
             setModalVisible(false);
-            fetchConsultas();
+            fetchConsultas(); // Recarrega as consultas quando o modal é fechado
           }}
           nome={nome}
           idade={idade}
@@ -178,7 +177,7 @@ const Table: React.FC = () => {
           resumo={resumo}
           onResumoChange={(newResumo) => setResumo(newResumo)}
           onUpdateResumo={() => {
-            const consultaId = consultas.find((c) => c.patient.name === nome)?.id;
+            const consultaId = consultas.find(c => c.patient.name === nome)?.id;
             if (consultaId) updateResumo(consultaId);
           }}
         />

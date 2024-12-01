@@ -10,10 +10,10 @@ import {
 } from "./styles";
 
 import agenda from "@/assets/agenda.svg";
-import prontuario from "@/assets/prontuario.svg";
 import dash from "@/assets/dash.svg";
 import suporte from "@/assets/suporte.svg";
 import logout from "@/assets/log-out.svg";
+import historico from "@/assets/historico.svg";
 import { useEffect, useState } from "react";
 
 const NavBar: React.FC = () => {
@@ -47,14 +47,14 @@ const NavBar: React.FC = () => {
           <img src={agenda} alt="" />
           <ButtonTitle>Agenda</ButtonTitle>
         </NavButton>
-        {/* <NavButton
+         <NavButton
           onClick={() => {
             navigate("/prontuario");
           }}
         >
-          <img src={prontuario} alt="" />
-          <ButtonTitle>Prontúario</ButtonTitle>
-        </NavButton> */}
+          <img src={historico} alt="" />
+          <ButtonTitle>Histórico</ButtonTitle>
+        </NavButton> 
         <NavButton
           onClick={() => {
             navigate("/dashboard");

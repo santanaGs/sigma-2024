@@ -1,7 +1,7 @@
 const Sequelize = require("sequelize");
 
-const sequelize = new Sequelize('sigma', 'root', '', {
-  host: 'localhost',
+const sequelize = new Sequelize('sigma', 'sigma', '123', {
+  host: '34.55.145.113',
   dialect: 'mysql',
   port: 3306,
   dialectOptions: {

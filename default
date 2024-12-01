@@ -38,12 +38,12 @@ server {
 	#
 	# include snippets/snakeoil.conf;
 
-	root /var/www/html;
+	root /var/www/html/dist;
 
 	# Add index.php to the list if you are using PHP
 	index index.html index.htm index.nginx-debian.html;
 
-	server_name 35.193.111.224;
+	server_name 34.55.145.113;
 
 	location / {
 		# First attempt to serve request as file, then

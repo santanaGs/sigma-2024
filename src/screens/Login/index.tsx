@@ -19,19 +19,19 @@ const Login: React.FC = () => {
   // Navigation
   const navigate = useNavigate();
   // Variables
-  const [email, setEmail] = useState<string | null>("");
-  const [password, setPassword] = useState<string | null>("");
-  const [error, setError] = useState<boolean>(false);
-  const [loading, setLoading] = useState<boolean>(false);
-  const [forgotPasswordSuccess, setForgotPasswordSuccess] = useState<boolean>(false);
+  const [email, setEmail] = useState<string | null>(""); 
+  const [password, setPassword] = useState<string | null>(""); 
+  const [error, setError] = useState<boolean>(false); 
+  const [loading, setLoading] = useState<boolean>(false); 
+  const [_forgotPasswordSuccess, setForgotPasswordSuccess] = useState<boolean>(false);
+
 
   // Function for login
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault(); // Evita o recarregamento da página
     setLoading(true);
     axios
-      // .post("http://35.193.111.224/backend/login", {
-      .post("http://localhost:8080/backend/login", {
+      .post("http://34.55.145.113:3000/backend/login", {
         email: email,
         password: password,
       })
@@ -63,7 +63,8 @@ const Login: React.FC = () => {
   };
 
   // Function for forgot password
-  const handleForgotPassword = async () => {
+  const handleForgotPassword = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault(); // Previne o comportamento de submit
     if (!email) {
       alert("Por favor, insira seu email.");
       return;
@@ -71,7 +72,7 @@ const Login: React.FC = () => {
 
     setLoading(true);
     try {
-      const response = await axios.post("http://localhost:8080/backend/redefinir-senha", {
+      const response = await axios.post("http://34.55.145.113:3000/backend/redefinir-senha", {
         email: email,
       });
       console.log(response.data);

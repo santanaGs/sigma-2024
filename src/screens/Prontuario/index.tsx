@@ -1,10 +1,13 @@
 import NavBar from "@/components/NavBar";
+import { Container } from "../Agenda/styles";
+import Table from "./components/Table";
 
 const Prontuario: React.FC = () => {
   return (
-    <div>
-      <NavBar />
-    </div>
+    <Container>
+    <NavBar />
+    <Table />
+  </Container>
   );
 };
 

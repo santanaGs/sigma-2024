@@ -1,4 +1,3 @@
-import { TextDiv } from "@/screens/Prontuario/components/Modal/styles";
 import {
   BottomDiv,
   Container,
@@ -8,6 +7,7 @@ import {
   ModalS,
   Submit,
   TextArea,
+  TextDiv,
   Title,
 } from "./styles";
 
@@ -58,6 +58,7 @@ const Modal: React.FC<ModalProps> = (props: ModalProps) => {
         <TextDiv>
           <Label>Resumo da consulta:</Label>
           <TextArea 
+          disabled
             value={props.resumo} // O valor do resumo
             onChange={(e) => props.onResumoChange(e.target.value)} // Atualiza o resumo
             placeholder="Digite o resumo da consulta aqui..."
@@ -66,7 +67,6 @@ const Modal: React.FC<ModalProps> = (props: ModalProps) => {
         <BottomDiv>
           {/* <input type="file" name="" id="" /> */}
           <Submit onClick={props.onClick}>Fechar</Submit>
-          <Submit onClick={props.onUpdateResumo}>Enviar</Submit> {/* Chama a função para atualizar o resumo */}
         </BottomDiv>
       </Content>
     </ModalS>

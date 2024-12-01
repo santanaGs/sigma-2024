@@ -10,6 +10,7 @@ interface InputType {
   placeholder: string;
   onChange?: React.ChangeEventHandler<HTMLInputElement>;
   password?: boolean;
+  value?: string | null
 }
 
 const InputS: React.FC<InputType> = ({
@@ -17,6 +18,7 @@ const InputS: React.FC<InputType> = ({
   placeholder,
   onChange,
   password,
+  value
 }: InputType) => {
   const [visible, setVisible] = useState("password");
 
@@ -40,6 +42,7 @@ const InputS: React.FC<InputType> = ({
         type={type === "password" ? visible : type}
         placeholder={placeholder}
         onChange={onChange}
+        value={value ?? ""}
       />
     </DivS>
   );
